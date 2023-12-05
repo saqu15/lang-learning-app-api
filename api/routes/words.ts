@@ -40,8 +40,13 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
+	const word = {
+		nameFrom: req.body.nameFrom,
+		nameTo: req.body.nameTo,
+	};
 	res.status(201).json({
 		message: 'handling POST request to /words',
+		createdWord: word,
 	});
 });
 

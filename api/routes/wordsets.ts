@@ -9,8 +9,14 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
+	const wordset = {
+		wordId: req.body.wordId,
+		langFrom: req.body.langFrom,
+		langTo: req.body.langTo,
+	};
 	res.status(201).json({
 		message: 'Wordset was created',
+		wordset: wordset,
 	});
 });
 

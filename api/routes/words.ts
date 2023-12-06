@@ -1,4 +1,6 @@
 import express from 'express';
+import { Word } from '../models/word.js';
+import mongoose from 'mongoose';
 
 export const router = express.Router();
 
@@ -34,16 +36,33 @@ export const router = express.Router();
  *               error: Wystąpił błąd podczas pobierania danych
  */
 router.get('/', (req, res, next) => {
-	res.status(200).json({
-		message: 'handling GET request to /words',
-	});
+	Word.find()
+		.exec()
+		.then(words => {
+			console.log(words);
+			res.status(200).json(words);
+		})
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({ error: err });
+		});
 });
 
 router.post('/', (req, res, next) => {
-	const word = {
+	console.log(req.body.nameFrom, req.body.nameTo, req.body);
+	const word = new Word({
 		nameFrom: req.body.nameFrom,
 		nameTo: req.body.nameTo,
-	};
+	});
+
+	console.log(word);
+
+	word.save()
+		.then(result => {
+			console.log(result);
+		})
+		.catch(err => console.log(err));
+
 	res.status(201).json({
 		message: 'handling POST request to /words',
 		createdWord: word,
@@ -69,25 +88,39 @@ router.post('/', (req, res, next) => {
  */
 router.get('/:wordId', (req, res, next) => {
 	const id = req.params.wordId;
-	if (id === '999') {
-		res.status(200).json({
-			message: 'word id 999',
+	Word.findById(id)
+		.exec()
+		.then(word => {
+			console.log(word);
+			if (word) {
+				res.status(200).json({ word });
+			} else {
+				res.status(404).json({ message: 'Not found ' });
+			}
+		})
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({ error: err });
 		});
-	} else {
-		res.status(200).json({
-			message: 'id passed',
-		});
-	}
 });
 
 router.patch('/:wordId', (req, res, next) => {
-	res.status(200).json({
-		message: 'updated word',
-	});
+	const id = req.params.wordId;
+
+	Word.findByIdAndUpdate(id, { $set: req.body }, { new: true })
+		.then(result => res.status(200).json(result))
+		.catch(err => res.status(500).json({ error: err }));
 });
 
 router.delete('/:wordId', (req, res, next) => {
-	res.status(200).json({
-		message: 'deleted word',
-	});
+	const id = req.params.wordId;
+	Word.deleteOne({ _id: id })
+		.exec()
+		.then(result => {
+			res.status(200).json(result);
+		})
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({ error: err });
+		});
 });

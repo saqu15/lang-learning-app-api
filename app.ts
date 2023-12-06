@@ -3,12 +3,16 @@ import { router as wordsRoute } from './api/routes/words.js';
 import { router as wordsetsRoute } from './api/routes/wordsets.js';
 import log from 'morgan';
 import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
+import { ResponseError } from './api/utils/response-error.js';
 
 export const app = express();
 
-interface ResponseError extends Error {
-	status?: number;
-}
+mongoose.connect(
+	'mongodb+srv://szymon-node:' +
+		process.env.MONGO_ATLAS_PW +
+		'@lang-learning-app.u16btri.mongodb.net/?retryWrites=true&w=majority'
+);
 
 app.use(log('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));

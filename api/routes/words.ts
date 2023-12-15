@@ -37,10 +37,26 @@ export const router = express.Router();
  */
 router.get('/', (req, res, next) => {
 	Word.find()
+		.select('-__v')
 		.exec()
 		.then(words => {
-			console.log(words);
-			res.status(200).json(words);
+			const response = {
+				count: words.length,
+				words: words.map(word => {
+					return {
+						nameFrom: word.nameFrom,
+						nameTo: word.nameTo,
+						_id: word._id,
+						request: {
+							type: 'GET',
+							url: process.env.APP_URL + '/words/' + word._id,
+						},
+					};
+				}),
+			};
+
+			console.log(response);
+			res.status(200).json(response);
 		})
 		.catch(err => {
 			console.log(err);
@@ -55,18 +71,25 @@ router.post('/', (req, res, next) => {
 		nameTo: req.body.nameTo,
 	});
 
-	console.log(word);
-
 	word.save()
 		.then(result => {
-			console.log(result);
+			res.status(201).json({
+				message: 'handling POST request to /words',
+				createdWord: {
+					nameFrom: word.nameFrom,
+					nameTo: word.nameTo,
+					_id: word._id,
+					request: {
+						type: 'GET',
+						url: process.env.APP_URL + '/words/' + word._id,
+					},
+				},
+			});
 		})
-		.catch(err => console.log(err));
-
-	res.status(201).json({
-		message: 'handling POST request to /words',
-		createdWord: word,
-	});
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({ error: err });
+		});
 });
 
 /**
@@ -89,11 +112,19 @@ router.post('/', (req, res, next) => {
 router.get('/:wordId', (req, res, next) => {
 	const id = req.params.wordId;
 	Word.findById(id)
+		.select('-__v')
 		.exec()
 		.then(word => {
 			console.log(word);
 			if (word) {
-				res.status(200).json({ word });
+				res.status(200).json({
+					word,
+					request: {
+						type: 'GET',
+						description: 'Get all words',
+						url: process.env.APP_URL + '/words',
+					},
+				});
 			} else {
 				res.status(404).json({ message: 'Not found ' });
 			}
@@ -108,7 +139,15 @@ router.patch('/:wordId', (req, res, next) => {
 	const id = req.params.wordId;
 
 	Word.findByIdAndUpdate(id, { $set: req.body }, { new: true })
-		.then(result => res.status(200).json(result))
+		.then(result =>
+			res.status(200).json({
+				message: 'Word updated',
+				request: {
+					type: 'GET',
+					url: process.env.APP_URL + '/words/' + id,
+				},
+			})
+		)
 		.catch(err => res.status(500).json({ error: err }));
 });
 
@@ -117,7 +156,14 @@ router.delete('/:wordId', (req, res, next) => {
 	Word.deleteOne({ _id: id })
 		.exec()
 		.then(result => {
-			res.status(200).json(result);
+			res.status(200).json({
+				message: 'Word deleted',
+				request: {
+					type: 'POST',
+					url: process.env.APP_URL + '/words',
+					body: { nameFrom: 'string', nameTo: 'string' },
+				},
+			});
 		})
 		.catch(err => {
 			console.log(err);

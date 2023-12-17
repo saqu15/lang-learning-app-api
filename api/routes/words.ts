@@ -1,8 +1,8 @@
 import express from 'express';
 import { Word } from '../models/word.js';
-import mongoose from 'mongoose';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
+import IWord from '../interfaces/IWord.js';
 
 export const router = express.Router();
 
@@ -99,10 +99,10 @@ router.get('/', (req, res, next) => {
 
 router.post('/', upload.single('wordImage'), (req, res, next) => {
 	console.log(req.file);
-	const word = new Word({
+	const word = new Word<IWord>({
 		nameFrom: req.body.nameFrom,
 		nameTo: req.body.nameTo,
-		wordImage: req.file ? req.file.path : null,
+		wordImage: req.file ? req.file.path : '',
 	});
 
 	word.save()

@@ -1,10 +1,5 @@
 import mongoose from 'mongoose';
-
-export interface IUser {
-	login: String;
-	password: String;
-	email: String;
-}
+import IUser from '../interfaces/IUser.js';
 
 const userSchema = new mongoose.Schema<IUser>({
 	login: { type: String, required: true },

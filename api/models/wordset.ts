@@ -1,9 +1,5 @@
 import mongoose from 'mongoose';
-
-interface IWordset {
-	word: mongoose.Schema.Types.ObjectId;
-	elements: Number;
-}
+import IWordset from '../interfaces/IWordset.js';
 
 const wordsetSchema = new mongoose.Schema<IWordset>({
 	word: { type: mongoose.Schema.Types.ObjectId, ref: 'Word', required: true },

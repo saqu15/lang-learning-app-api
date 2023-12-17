@@ -1,7 +1,7 @@
 import express from 'express';
-import mongoose from 'mongoose';
-import { IUser, User } from '../models/user.js';
+import { User } from '../models/user.js';
 import bcrypt from 'bcrypt';
+import IUser from '../interfaces/IUser.js';
 
 export const router = express.Router();
 

@@ -1,10 +1,5 @@
 import mongoose from 'mongoose';
-
-interface IWord {
-	nameFrom: string;
-	nameTo: string;
-	wordImage: string;
-}
+import IWord from '../interfaces/IWord.js';
 
 const wordSchema = new mongoose.Schema<IWord>({
 	nameFrom: { type: String, required: true },

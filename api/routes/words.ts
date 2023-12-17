@@ -15,7 +15,11 @@ const storage = multer.diskStorage({
 	},
 });
 
-const fileFilter = (req, file, cb) => {
+const fileFilter = (
+	req: Express.Request,
+	file: Express.Multer.File,
+	cb: any
+) => {
 	if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
 		cb(null, true);
 	} else {
@@ -98,7 +102,7 @@ router.post('/', upload.single('wordImage'), (req, res, next) => {
 	const word = new Word({
 		nameFrom: req.body.nameFrom,
 		nameTo: req.body.nameTo,
-		wordImage: req.file ? req.file.path : null
+		wordImage: req.file ? req.file.path : null,
 	});
 
 	word.save()

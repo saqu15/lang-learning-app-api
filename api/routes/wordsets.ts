@@ -1,7 +1,7 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import { Wordset } from '../models/wordset.js';
 import { Word } from '../models/word.js';
+import IWordset from '../interfaces/IWordset.js';
 
 export const router = express.Router();
 
@@ -40,7 +40,7 @@ router.post('/', (req, res, next) => {
 			if (!word) {
 				throw new Error('Word not found');
 			}
-			const wordset = new Wordset({
+			const wordset = new Wordset<IWordset>({
 				elements: req.body.elements,
 				word: req.body.wordId,
 			});

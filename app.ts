@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { router as wordsRoute } from './api/routes/words.js';
 import { router as wordsetsRoute } from './api/routes/wordsets.js';
+import { router as userRoute } from './api/routes/user.js';
 import log from 'morgan';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
@@ -38,6 +39,7 @@ app.use((req: Request, res: Response, next: any) => {
 
 app.use('/words', wordsRoute);
 app.use('/wordsets', wordsetsRoute);
+app.use('/user', userRoute);
 
 app.use((req: Request, res: Response, next: any) => {
 	const error: ResponseError = {

@@ -1,8 +1,36 @@
 import express from 'express';
 import { Word } from '../models/word.js';
 import mongoose from 'mongoose';
+import multer from 'multer';
+import { v4 as uuidv4 } from 'uuid';
 
 export const router = express.Router();
+
+const storage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		cb(null, './uploads/');
+	},
+	filename: (req, file, cb) => {
+		cb(null, uuidv4() + file.originalname);
+	},
+});
+
+const fileFilter = (req, file, cb) => {
+	if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
+		cb(null, true);
+	} else {
+		// reject file
+		cb(null, false);
+	}
+};
+
+const upload = multer({
+	storage: storage,
+	limits: {
+		fileSize: 1024 * 1024 * 5,
+	},
+	fileFilter,
+});
 
 /**
  * @swagger
@@ -47,6 +75,7 @@ router.get('/', (req, res, next) => {
 						nameFrom: word.nameFrom,
 						nameTo: word.nameTo,
 						_id: word._id,
+						wordImage: word.wordImage,
 						request: {
 							type: 'GET',
 							url: process.env.APP_URL + '/words/' + word._id,
@@ -64,11 +93,12 @@ router.get('/', (req, res, next) => {
 		});
 });
 
-router.post('/', (req, res, next) => {
-	console.log(req.body.nameFrom, req.body.nameTo, req.body);
+router.post('/', upload.single('wordImage'), (req, res, next) => {
+	console.log(req.file);
 	const word = new Word({
 		nameFrom: req.body.nameFrom,
 		nameTo: req.body.nameTo,
+		wordImage: req.file ? req.file.path : null
 	});
 
 	word.save()

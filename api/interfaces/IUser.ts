@@ -1,5 +1,5 @@
 export default interface IUser {
-	login: String;
-	password: String;
-	email: String;
+	login: string;
+	password: string;
+	email: string;
 }

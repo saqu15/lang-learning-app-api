@@ -2,10 +2,11 @@ import express from 'express';
 import { Wordset } from '../models/wordset.js';
 import { Word } from '../models/word.js';
 import IWordset from '../interfaces/IWordset.js';
+import checkAuth from '../middleware/check-auth.js';
 
 export const router = express.Router();
 
-router.get('/', (req, res, next) => {
+router.get('/', checkAuth, (req, res, next) => {
 	Wordset.find()
 		.select('-__v')
 		.populate('word', '-__v')
@@ -34,7 +35,7 @@ router.get('/', (req, res, next) => {
 		});
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', checkAuth, (req, res, next) => {
 	Word.findById(req.body.wordId)
 		.then(word => {
 			if (!word) {
@@ -78,7 +79,7 @@ router.post('/', (req, res, next) => {
 		});
 });
 
-router.get('/:wordsetId', (req, res, next) => {
+router.get('/:wordsetId', checkAuth, (req, res, next) => {
 	Wordset.findById(req.params.wordsetId)
 		.select('-__v')
 		.populate('word', '-__v')
@@ -110,7 +111,7 @@ router.get('/:wordsetId', (req, res, next) => {
 		});
 });
 
-router.delete('/:wordsetId', (req, res, next) => {
+router.delete('/:wordsetId', checkAuth, (req, res, next) => {
 	Wordset.deleteOne({ _id: req.params.wordsetId })
 		.exec()
 		.then(wordset => {

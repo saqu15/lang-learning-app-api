@@ -3,7 +3,6 @@ import { router as wordsRoute } from './api/routes/words.js';
 import { router as wordsetsRoute } from './api/routes/wordsets.js';
 import { router as userRoute } from './api/routes/user.js';
 import log from 'morgan';
-import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import { ResponseError } from './api/utils/response-error.js';
 
@@ -17,8 +16,8 @@ mongoose.connect(
 
 app.use(log('dev'));
 app.use('/uploads', express.static('uploads'));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 app.use((req: Request, res: Response, next: any) => {
 	res.header('Access-Control-Allow-Origin', '*');

@@ -3,6 +3,7 @@ import { Word } from '../models/word.js';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import IWord from '../interfaces/IWord.js';
+import checkAuth from '../middleware/check-auth.js';
 
 export const router = express.Router();
 
@@ -97,7 +98,7 @@ router.get('/', (req, res, next) => {
 		});
 });
 
-router.post('/', upload.single('wordImage'), (req, res, next) => {
+router.post('/', checkAuth, upload.single('wordImage'), (req, res, next) => {
 	console.log(req.file);
 	const word = new Word<IWord>({
 		nameFrom: req.body.nameFrom,
@@ -169,7 +170,7 @@ router.get('/:wordId', (req, res, next) => {
 		});
 });
 
-router.patch('/:wordId', (req, res, next) => {
+router.patch('/:wordId', checkAuth, (req, res, next) => {
 	const id = req.params.wordId;
 
 	Word.findByIdAndUpdate(id, { $set: req.body }, { new: true })
@@ -185,7 +186,7 @@ router.patch('/:wordId', (req, res, next) => {
 		.catch(err => res.status(500).json({ error: err }));
 });
 
-router.delete('/:wordId', (req, res, next) => {
+router.delete('/:wordId', checkAuth, (req, res, next) => {
 	const id = req.params.wordId;
 	Word.deleteOne({ _id: id })
 		.exec()

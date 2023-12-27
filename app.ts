@@ -8,11 +8,16 @@ import { ResponseError } from './api/utils/response-error.js';
 
 export const app = express();
 
-mongoose.connect(
-	'mongodb+srv://szymon-node:' +
-		process.env.MONGO_ATLAS_PW +
-		'@lang-learning-app.u16btri.mongodb.net/?retryWrites=true&w=majority'
-);
+mongoose
+	.connect(
+		'mongodb+srv://szymon-node:' +
+			process.env.MONGO_ATLAS_PW +
+			'@lang-learning-app.u16btri.mongodb.net/?retryWrites=true&w=majority'
+	)
+	.then(() => {
+		console.log('db connected');
+	})
+	.catch(console.log);
 
 app.use(log('dev'));
 app.use('/uploads', express.static('uploads'));

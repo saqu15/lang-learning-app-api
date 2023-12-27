@@ -3,6 +3,7 @@ import { User } from '../models/user.js';
 import bcrypt from 'bcrypt';
 import IUser from '../interfaces/IUser.js';
 import jwt, { Secret } from 'jsonwebtoken';
+import checkAuth from '../middleware/check-auth.js';
 
 export const router = express.Router();
 
@@ -94,7 +95,7 @@ router.post('/login', (req, res, next) => {
 		});
 });
 
-router.delete('/:userId', (req, res, next) => {
+router.delete('/:userId', checkAuth, (req, res, next) => {
 	User.deleteOne({ _id: req.params.userId })
 		.exec()
 		.then(result => {

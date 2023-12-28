@@ -36,7 +36,11 @@ export const wordsets_get_all = (
 		});
 };
 
-export const wordsets_create_wordset = (req: Request, res: Response, next: NextFunction) => {
+export const wordsets_create_wordset = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	Word.findById(req.body.wordId)
 		.then(word => {
 			if (!word) {
@@ -78,9 +82,13 @@ export const wordsets_create_wordset = (req: Request, res: Response, next: NextF
 				error: errorMessage,
 			});
 		});
-}
+};
 
-export const wordsets_get_order = (req: Request, res: Response, next: NextFunction) => {
+export const wordsets_get_order = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	Wordset.findById(req.params.wordsetId)
 		.select('-__v')
 		.populate('word', '-__v')
@@ -110,9 +118,13 @@ export const wordsets_get_order = (req: Request, res: Response, next: NextFuncti
 				error: errorMessage,
 			});
 		});
-}
+};
 
-export const wordsets_delete_wordset = (req: Request, res: Response, next: NextFunction) => {
+export const wordsets_delete_wordset = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	Wordset.deleteOne({ _id: req.params.wordsetId })
 		.exec()
 		.then(wordset => {
@@ -131,4 +143,4 @@ export const wordsets_delete_wordset = (req: Request, res: Response, next: NextF
 		.catch(err => {
 			res.status(500).json({ error: err });
 		});
-}
+};

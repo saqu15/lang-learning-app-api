@@ -1,119 +1,156 @@
 import express from 'express';
-import { User } from '../models/user.js';
-import bcrypt from 'bcrypt';
-import IUser from '../interfaces/IUser.js';
-import jwt, { Secret } from 'jsonwebtoken';
 import checkAuth from '../middleware/check-auth.js';
+import * as UserController from '../controllers/UserController.js';
 
+/**
+ * @swagger
+ * tags:
+ *  name: Users
+ *  description: User endpoints
+ */
 export const router = express.Router();
 
-router.post('/signup', (req, res, next) => {
-	User.find({ email: req.body.email })
-		.exec()
-		.then(user => {
-			if (user.length >= 1) {
-				return res.status(409).json({
-					message: 'User with this email already exists',
-				});
-			} else {
-				bcrypt.hash(req.body.password, 10, (err, hash) => {
-					if (err) {
-						return res.status(500).json({
-							error: err,
-						});
-					} else {
-						const user = new User<IUser>({
-							login: req.body.login,
-							password: hash,
-							email: req.body.email,
-						});
+/**
+ * @swagger
+ * /api/user/signup:
+ *   post:
+ *     summary: Register a new user
+ *     description: Endpoint for registering a new user.
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               login:
+ *                 type: string
+ *                 description: User's login name.
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address.
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: User's password.
+ *             required:
+ *               - login
+ *               - email
+ *               - password
+ *           example:
+ *             login: john_doe
+ *             email: john.doe@example.com
+ *             password: secretPassword123
+ *     responses:
+ *       '201':
+ *         description: User created successfully.
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: User created
+ *       '409':
+ *         description: Conflict - User with this email already exists.
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: User with this email already exists
+ *       '500':
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error during user registration
+ */
+router.post('/signup', UserController.user_signup);
 
-						user.save()
-							.then(result => {
-								console.log(result);
-								res.status(201).json({
-									message: 'User created',
-								});
-							})
-							.catch(err => {
-								console.log(err);
-								res.status(500).json({
-									error: err,
-								});
-							});
-					}
-				});
-			}
-		});
-});
+/**
+ * @swagger
+ * /api/user/login:
+ *   post:
+ *     summary: Authenticate user
+ *     description: Endpoint for authenticating a user based on login credentials.
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address for login.
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: User's password for login.
+ *             required:
+ *               - email
+ *               - password
+ *           example:
+ *             email: john.doe@example.com
+ *             password: secretPassword123
+ *     responses:
+ *       '200':
+ *         description: Authentication successful.
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Auth successful
+ *               token: <generated_jwt_token>
+ *       '401':
+ *         description: Unauthorized - Wrong login data.
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Wrong login data
+ *       '500':
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error during user authentication
+ */
+router.post('/login', UserController.user_login);
 
-router.post('/login', (req, res, next) => {
-	User.find({ email: req.body.email })
-		.exec()
-		.then(user => {
-			if (user.length < 1) {
-				return res.status(401).json({
-					message: 'Wrong login data',
-				});
-			}
-
-			bcrypt.compare(
-				req.body.password,
-				user[0].password,
-				(err, result) => {
-					if (err) {
-						return res.status(401).json({
-							message: 'Wrong login data',
-						});
-					}
-					if (result) {
-						const token = jwt.sign(
-							{
-								email: user[0].email,
-								userId: user[0]._id,
-							},
-							process.env.JWT_KEY as Secret,
-							{ expiresIn: '1h' }
-						);
-						return res.status(200).json({
-							message: 'Auth successful',
-							token,
-						});
-					}
-
-					return res.status(401).json({
-						message: 'Wrong login data',
-					});
-				}
-			);
-		})
-		.catch(err => {
-			console.log(err);
-			res.status(500).json({
-				error: err,
-			});
-		});
-});
-
-router.delete('/:userId', checkAuth, (req, res, next) => {
-	User.deleteOne({ _id: req.params.userId })
-		.exec()
-		.then(result => {
-			console.log(result);
-			if (result.deletedCount >= 1) {
-				res.status(200).json({
-					message: 'User deleted',
-				});
-			} else {
-				res.status(404).json({
-					message: 'User not found',
-				});
-			}
-		})
-		.catch(err => {
-			console.log(err);
-			res.status(500).json({
-				error: err,
-			});
-		});
-});
+/**
+ * @swagger
+ * /api/user/{userId}:
+ *   delete:
+ *     summary: Delete a user
+ *     description: Endpoint for deleting a user by their user ID.
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - name: userId
+ *         in: path
+ *         description: ID of the user to be deleted.
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: User deleted successfully.
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: User deleted
+ *       '404':
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: User not found
+ *       '500':
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error during user deletion
+ */
+router.delete('/:userId', checkAuth, UserController.user_delete_user);

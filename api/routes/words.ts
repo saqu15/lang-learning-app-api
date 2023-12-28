@@ -46,7 +46,7 @@ const upload = multer({
 
 /**
  * @swagger
- * /words:
+ * /api/words:
  *   get:
  *     summary: Pobierz listę wszystkich słów
  *     description: Endpoint służy do pobierania listy wszystkich dostępnych słów.
@@ -68,7 +68,7 @@ const upload = multer({
  *             example:
  *               error: Wystąpił błąd podczas pobierania danych
  */
-router.get('/', (req, res, next) => {
+router.get('/', checkAuth, (req, res, next) => {
 	Word.find()
 		.select('-__v')
 		.exec()
@@ -98,7 +98,7 @@ router.get('/', (req, res, next) => {
 		});
 });
 
-router.post('/', checkAuth, upload.single('wordImage'), (req, res, next) => {
+router.post('/', upload.single('wordImage'), (req, res, next) => {
 	console.log(req.file);
 	const word = new Word<IWord>({
 		nameFrom: req.body.nameFrom,
@@ -129,7 +129,7 @@ router.post('/', checkAuth, upload.single('wordImage'), (req, res, next) => {
 
 /**
  * @swagger
- * /words/{id}:
+ * /api/words/{id}:
  *  get:
  *   summary: Get the word by id
  *   tags: [Words]

@@ -1,6 +1,6 @@
 import express from 'express';
 import checkAuth from '../middleware/check-auth.js';
-import * as WordsetController from '../controllers/wordsets.js';
+import * as WordsetController from '../controllers/WordsetsController.js';
 
 export const router = express.Router();
 
@@ -10,4 +10,8 @@ router.post('/', checkAuth, WordsetController.wordsets_create_wordset);
 
 router.get('/:wordsetId', checkAuth, WordsetController.wordsets_get_order);
 
-router.delete('/:wordsetId', checkAuth, WordsetController.wordsets_delete_wordset);
+router.delete(
+	'/:wordsetId',
+	checkAuth,
+	WordsetController.wordsets_delete_wordset
+);

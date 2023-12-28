@@ -5,6 +5,7 @@ import { router as userRoute } from './api/routes/user.js';
 import log from 'morgan';
 import mongoose from 'mongoose';
 import { ResponseError } from './api/utils/response-error.js';
+import swaggerDocs from './api/utils/swagger.js';
 
 export const app = express();
 
@@ -41,11 +42,14 @@ app.use((req: Request, res: Response, next: any) => {
 	next();
 });
 
-app.use('/words', wordsRoute);
-app.use('/wordsets', wordsetsRoute);
-app.use('/user', userRoute);
+app.use('/api/words', wordsRoute);
+app.use('/api/wordsets', wordsetsRoute);
+app.use('/api/user', userRoute);
 
 app.use((req: Request, res: Response, next: any) => {
+	if (req.path.startsWith('/docs')) {
+		return next();
+	}
 	const error: ResponseError = {
 		message: 'Not found',
 		name: 'Not found',

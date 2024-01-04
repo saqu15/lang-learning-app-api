@@ -59,8 +59,16 @@ const upload = multer({
  *           application/json:
  *             example:
  *               words:
- *                 - hello
- *                 - world
+ *                 - nameFrom: "hello"
+ *                   nameTo: "czesc"
+ *                   wordImage: "/images/hello.jpg"
+ *                 - nameFrom: "world"
+ *                   nameTo: "swiat"
+ *                   wordImage: "/images/world.jpg"
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Word'
  *       '500':
  *         description: Błąd serwera
  *         content:

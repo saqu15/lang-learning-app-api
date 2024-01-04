@@ -1,3 +1,7 @@
+import mongoose from 'mongoose';
+import { IAuthenticatedRequest } from '../interfaces/IAuthenticatedRequest.js';
+import { IJwtPayload } from '../interfaces/IJwtPayload.js';
+import IUser from '../interfaces/IUser.js';
 import IWordset from '../interfaces/IWordset.js';
 import { Word } from '../models/word.js';
 import { Wordset } from '../models/wordset.js';
@@ -10,7 +14,6 @@ export const wordsets_get_all = (
 ) => {
 	Wordset.find()
 		.select('-__v')
-		.populate('word', '-__v')
 		.exec()
 		.then(wordsets => {
 			res.status(200).json({
@@ -18,8 +21,6 @@ export const wordsets_get_all = (
 				wordsets: wordsets.map(wordset => {
 					return {
 						_id: wordset._id,
-						word: wordset.word,
-						elements: wordset.elements,
 						request: {
 							type: 'GET',
 							url:
@@ -37,50 +38,41 @@ export const wordsets_get_all = (
 };
 
 export const wordsets_create_wordset = (
-	req: Request,
+	req: IAuthenticatedRequest,
 	res: Response,
 	next: NextFunction
 ) => {
-	Word.findById(req.body.wordId)
-		.then(word => {
-			if (!word) {
-				throw new Error('Word not found');
-			}
-			const wordset = new Wordset<IWordset>({
-				elements: req.body.elements,
-				word: req.body.wordId,
-			});
+	const user = req.user as IJwtPayload;
 
-			return wordset.save();
-		})
+	console.log(user.userId);
+	const wordset = new Wordset<IWordset>({
+		userId: user.userId,
+		wordsetName: req.body.wordsetName,
+		languageFrom: req.body.languageFrom,
+		languageTo: req.body.languageTo,
+		words: req.body.words,
+	});
+
+	wordset
+		.save()
 		.then(result => {
-			console.log(result);
 			res.status(201).json({
-				message: 'Wordset stored',
 				createdWordset: {
-					_id: result._id,
-					word: result.word,
-					elements: result.elements,
-				},
-				request: {
-					type: 'GET',
-					url: process.env.APP_URL + '/wordsets/' + result._id,
+					wordsetName: wordset.wordsetName,
+					languageFrom: wordset.languageFrom,
+					languageTo: wordset.languageTo,
+					words: wordset.words,
+					_id: wordset._id,
+					request: {
+						type: 'GET',
+						url: process.env.APP_URL + '/wordsets/' + wordset._id,
+					},
 				},
 			});
 		})
 		.catch(err => {
 			console.log(err);
-			let statusCode = 500;
-			let errorMessage = 'Internal Server Error';
-
-			if (err.message === 'Word not found') {
-				statusCode = 404;
-				errorMessage = err.message;
-			}
-
-			res.status(statusCode).json({
-				error: errorMessage,
-			});
+			res.status(500).json({ error: err });
 		});
 };
 
@@ -91,7 +83,6 @@ export const wordsets_get_order = (
 ) => {
 	Wordset.findById(req.params.wordsetId)
 		.select('-__v')
-		.populate('word', '-__v')
 		.exec()
 		.then(wordset => {
 			if (!wordset) {

@@ -1,9 +1,9 @@
 import jwt, { Secret } from 'jsonwebtoken';
 import { Response, NextFunction } from 'express';
-import { AuthenticatedRequest } from '../interfaces/IAuthenticatedRequest.js';
+import { IAuthenticatedRequest } from '../interfaces/IAuthenticatedRequest.js';
 
 export default (
-	req: AuthenticatedRequest,
+	req: IAuthenticatedRequest,
 	res: Response,
 	next: NextFunction
 ) => {

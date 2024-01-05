@@ -74,7 +74,7 @@ export const user_login = (req: Request, res: Response, next: NextFunction) => {
 								userId: user[0]._id,
 							},
 							process.env.JWT_KEY as Secret,
-							{ expiresIn: '1h' }
+							{ expiresIn: '4h' }
 						);
 						return res.status(200).json({
 							message: 'Auth successful',

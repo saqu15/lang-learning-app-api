@@ -26,10 +26,10 @@ import IWordset from '../interfaces/IWordset.js';
  *           type: string
  *           description: "Name of the wordset."
  *         languageFrom:
- *           type: string
+ *           $ref: '#/components/schemas/Languages'
  *           description: "Source language of the wordset."
  *         languageTo:
- *           type: string
+ *           $ref: '#/components/schemas/Languages'
  *           description: "Target language of the wordset."
  *         words:
  *           type: array

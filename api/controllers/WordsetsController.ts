@@ -14,14 +14,17 @@ export const wordsets_get_all = (
 ) => {
 	Wordset.find()
 		.select('-__v')
+		.populate('userId', 'login')
 		.exec()
 		.then(wordsets => {
 			res.status(200).json({
 				count: wordsets.length,
 				wordsets: wordsets.map(wordset => {
+					const user = wordset.userId as any;
 					return {
 						id: wordset._id,
-						userId: wordset.userId,
+						userId: user?._id,
+						userName: user?.login,
 						languageFrom: wordset.languageFrom,
 						languageTo: wordset.languageTo,
 						wordsetName: wordset.wordsetName,

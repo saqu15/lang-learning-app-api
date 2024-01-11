@@ -154,3 +154,40 @@ router.post('/login', UserController.user_login);
  *               error: Internal Server Error during user deletion
  */
 router.delete('/:userId', checkAuth, UserController.user_delete_user);
+
+/**
+ * @swagger
+ * /api/user/{userId}:
+ *   get:
+ *     summary: Get user by ID
+ *     description: Retrieve user details by their user ID.
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - name: userId
+ *         in: path
+ *         description: ID of the user to be retrieved.
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: User found successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       '404':
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: User not found
+ *       '500':
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error during user retrieval
+ */
+router.get('/:userId', checkAuth, UserController.user_get_user);

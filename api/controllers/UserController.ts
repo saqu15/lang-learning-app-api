@@ -3,6 +3,8 @@ import IUser from '../interfaces/IUser.js';
 import { User } from '../models/user.js';
 import bcrypt from 'bcrypt';
 import { Request, Response, NextFunction } from 'express';
+import { IAuthenticatedRequest } from '../interfaces/IAuthenticatedRequest.js';
+import { IJwtPayload } from '../interfaces/IJwtPayload.js';
 
 export const user_signup = (
 	req: Request,
@@ -122,3 +124,30 @@ export const user_delete_user = (
 			});
 		});
 };
+
+export const user_get_user = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	User.findById(req.params.userId).exec().then(result => {
+		if (!result) {
+			throw new Error('User not found');
+		}
+		res.status(200).json({
+			login: result.login
+		});
+	}).catch(err => {
+		let statusCode = 500;
+		let errorMessage = 'Internal Server Error';
+
+		if (err.message === 'User not found') {
+			statusCode = 404;
+			errorMessage = err.message;
+		}
+
+		res.status(statusCode).json({
+			error: errorMessage,
+		});
+	});
+}

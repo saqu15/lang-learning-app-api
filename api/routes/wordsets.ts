@@ -16,7 +16,7 @@ export const router = express.Router();
  * /api/wordsets:
  *   get:
  *     summary: Get all wordsets
- *     description: Retrieve all wordsets from the database.
+ *     description: Retrieve all wordsets from the database, including user details.
  *     tags:
  *       - Wordsets
  *     responses:
@@ -24,6 +24,16 @@ export const router = express.Router();
  *         description: Successful response with wordsets
  *         content:
  *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 count:
+ *                   type: integer
+ *                   description: Number of wordsets.
+ *                 wordsets:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Wordset'
  *             example:
  *               count: 2
  *               wordsets:
@@ -32,20 +42,13 @@ export const router = express.Router();
  *                   languageFrom: "English"
  *                   languageTo: "Spanish"
  *                   wordsetName: "Travel Vocabulary"
- *                   words: [
- *                     {
- *                       nameFrom: "hotel",
+ *                   words:
+ *                     - nameFrom: "hotel"
  *                       nameTo: "hotel"
- *                     },
- *                     {
- *                       nameFrom: "restaurant",
+ *                     - nameFrom: "restaurant"
  *                       nameTo: "restaurante"
- *                     },
- *                     {
- *                       nameFrom: "airport",
+ *                     - nameFrom: "airport"
  *                       nameTo: "aeropuerto"
- *                     }
- *                   ]
  *                   request:
  *                     type: "GET"
  *                     url: "https://example.com/api/wordsets/5ff9b359c37f713e6c6a3e1a"
@@ -54,20 +57,13 @@ export const router = express.Router();
  *                   languageFrom: "French"
  *                   languageTo: "German"
  *                   wordsetName: "Basic Phrases"
- *                   words: [
- *                     {
- *                       nameFrom: "hello",
+ *                   words:
+ *                     - nameFrom: "hello"
  *                       nameTo: "hallo"
- *                     },
- *                     {
- *                       nameFrom: "goodbye",
+ *                     - nameFrom: "goodbye"
  *                       nameTo: "auf Wiedersehen"
- *                     },
- *                     {
- *                       nameFrom: "thank you",
+ *                     - nameFrom: "thank you"
  *                       nameTo: "danke"
- *                     }
- *                   ]
  *                   request:
  *                     type: "GET"
  *                     url: "https://example.com/api/wordsets/5ff9b359c37f713e6c6a3e1b"

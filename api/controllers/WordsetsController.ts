@@ -20,7 +20,12 @@ export const wordsets_get_all = (
 				count: wordsets.length,
 				wordsets: wordsets.map(wordset => {
 					return {
-						_id: wordset._id,
+						id: wordset._id,
+						userId: wordset.userId,
+						languageFrom: wordset.languageFrom,
+						languageTo: wordset.languageTo,
+						wordsetName: wordset.wordsetName,
+						words: wordset.words,
 						request: {
 							type: 'GET',
 							url:
@@ -62,7 +67,7 @@ export const wordsets_create_wordset = (
 					languageFrom: wordset.languageFrom,
 					languageTo: wordset.languageTo,
 					words: wordset.words,
-					_id: wordset._id,
+					id: wordset._id,
 					request: {
 						type: 'GET',
 						url: process.env.APP_URL + '/wordsets/' + wordset._id,
@@ -76,7 +81,7 @@ export const wordsets_create_wordset = (
 		});
 };
 
-export const wordsets_get_order = (
+export const wordsets_get_wordset = (
 	req: Request,
 	res: Response,
 	next: NextFunction

@@ -18,6 +18,10 @@ import IWordset from '../interfaces/IWordset.js';
  *     Wordset:
  *       type: object
  *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           description: "Wordset ID."
  *         userId:
  *           type: string
  *           format: uuid

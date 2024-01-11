@@ -16,25 +16,61 @@ export const router = express.Router();
  * /api/wordsets:
  *   get:
  *     summary: Get all wordsets
- *     description: Endpoint to retrieve all wordsets.
+ *     description: Retrieve all wordsets from the database.
  *     tags:
  *       - Wordsets
  *     responses:
  *       '200':
- *         description: OK
+ *         description: Successful response with wordsets
  *         content:
  *           application/json:
  *             example:
  *               count: 2
  *               wordsets:
  *                 - _id: "5ff9b359c37f713e6c6a3e1a"
+ *                   userId: "12345"
+ *                   languageFrom: "English"
+ *                   languageTo: "Spanish"
+ *                   wordsetName: "Travel Vocabulary"
+ *                   words: [
+ *                     {
+ *                       nameFrom: "hotel",
+ *                       nameTo: "hotel"
+ *                     },
+ *                     {
+ *                       nameFrom: "restaurant",
+ *                       nameTo: "restaurante"
+ *                     },
+ *                     {
+ *                       nameFrom: "airport",
+ *                       nameTo: "aeropuerto"
+ *                     }
+ *                   ]
  *                   request:
  *                     type: "GET"
- *                     url: "https://localhost/api/wordsets/5ff9b359c37f713e6c6a3e1a"
+ *                     url: "https://example.com/api/wordsets/5ff9b359c37f713e6c6a3e1a"
  *                 - _id: "5ff9b359c37f713e6c6a3e1b"
+ *                   userId: "12345"
+ *                   languageFrom: "French"
+ *                   languageTo: "German"
+ *                   wordsetName: "Basic Phrases"
+ *                   words: [
+ *                     {
+ *                       nameFrom: "hello",
+ *                       nameTo: "hallo"
+ *                     },
+ *                     {
+ *                       nameFrom: "goodbye",
+ *                       nameTo: "auf Wiedersehen"
+ *                     },
+ *                     {
+ *                       nameFrom: "thank you",
+ *                       nameTo: "danke"
+ *                     }
+ *                   ]
  *                   request:
  *                     type: "GET"
- *                     url: "https://localhost/api/wordsets/5ff9b359c37f713e6c6a3e1b"
+ *                     url: "https://example.com/api/wordsets/5ff9b359c37f713e6c6a3e1b"
  *       '500':
  *         description: Internal Server Error
  *         content:
@@ -141,7 +177,7 @@ router.post('/', checkAuth, WordsetController.wordsets_create_wordset);
  *             example:
  *               error: "Internal Server Error. Please try again later."
  */
-router.get('/:wordsetId', checkAuth, WordsetController.wordsets_get_order);
+router.get('/:wordsetId', checkAuth, WordsetController.wordsets_get_wordset);
 
 /**
  * @swagger

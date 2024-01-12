@@ -6,6 +6,7 @@ import IWordset from '../interfaces/IWordset.js';
 import { Word } from '../models/word.js';
 import { Wordset } from '../models/wordset.js';
 import { Request, Response, NextFunction } from 'express';
+import IWord from '../interfaces/IWord.js';
 
 export const wordsets_get_all = (
 	req: Request,
@@ -91,13 +92,25 @@ export const wordsets_get_wordset = (
 ) => {
 	Wordset.findById(req.params.wordsetId)
 		.select('-__v')
+		.populate('userId', 'login')
 		.exec()
 		.then(wordset => {
 			if (!wordset) {
 				throw new Error('Wordset not found');
 			}
+
+			const user = wordset.userId as any;
+
 			res.status(200).json({
-				wordset,
+				wordsets: {
+					id: wordset._id,
+					userId: user?._id,
+					userName: user?.login,
+					wordsetName: wordset.wordsetName,
+					languageFrom: wordset.languageFrom,
+					languageTo: wordset.languageTo,
+					words: wordset.words,
+				},
 				request: {
 					type: 'GET',
 					url: process.env.APP_URL + '/wordsets',
@@ -120,10 +133,15 @@ export const wordsets_get_wordset = (
 };
 
 export const wordsets_delete_wordset = (
-	req: Request,
+	req: IAuthenticatedRequest,
 	res: Response,
 	next: NextFunction
 ) => {
+	if ((req.user as IJwtPayload).userId !== req.body.userId) {
+		res.status(401).json({ message: 'Unauthorized' });
+		return;
+	}
+
 	Wordset.deleteOne({ _id: req.params.wordsetId })
 		.exec()
 		.then(wordset => {
@@ -136,6 +154,46 @@ export const wordsets_delete_wordset = (
 						wordId: 'ID',
 						elements: 'Number',
 					},
+				},
+			});
+		})
+		.catch(err => {
+			res.status(500).json({ error: err });
+		});
+};
+
+export const wordsets_update_wordset = (
+	req: IAuthenticatedRequest,
+	res: Response,
+	next: NextFunction
+) => {
+	if ((req.user as IJwtPayload).userId !== req.body.userId) {
+		res.status(401).json({ message: 'Unauthorized' });
+		return;
+	}
+
+	const updatedWordset: IWordset = {
+		wordsetName: req.body.wordsetName,
+		languageFrom: req.body.languageFrom,
+		languageTo: req.body.languageTo,
+		words: req.body.words.map((word: IWord) => {
+			return {
+				nameFrom: word.nameFrom,
+				nameTo: word.nameTo,
+			} as IWord;
+		}),
+	};
+
+	console.log(updatedWordset);
+
+	Wordset.updateOne({ _id: req.params.wordsetId }, { $set: updatedWordset })
+		.exec()
+		.then(result => {
+			res.status(200).json({
+				message: 'Wordset updated',
+				request: {
+					type: 'GET',
+					ulr: process.env.APP_URL + '/wordsets' + req.params.id,
 				},
 			});
 		})

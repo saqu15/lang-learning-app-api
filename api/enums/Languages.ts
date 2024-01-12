@@ -14,10 +14,10 @@
  *       description: Enumeration of supported languages.
  */
 export enum Languages {
-    English,
-    Polish,
-    German,
-    French,
-    Spanish,
-    Italian
+	English,
+	Polish,
+	German,
+	French,
+	Spanish,
+	Italian,
 }

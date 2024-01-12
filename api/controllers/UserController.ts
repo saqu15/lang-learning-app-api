@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import { Request, Response, NextFunction } from 'express';
 import { IAuthenticatedRequest } from '../interfaces/IAuthenticatedRequest.js';
 import { IJwtPayload } from '../interfaces/IJwtPayload.js';
+import { Schema } from 'mongoose';
 
 export const user_signup = (
 	req: Request,
@@ -130,24 +131,45 @@ export const user_get_user = (
 	res: Response,
 	next: NextFunction
 ) => {
-	User.findById(req.params.userId).exec().then(result => {
-		if (!result) {
-			throw new Error('User not found');
-		}
-		res.status(200).json({
-			login: result.login
-		});
-	}).catch(err => {
-		let statusCode = 500;
-		let errorMessage = 'Internal Server Error';
+	getUserById(req.params.userId, res);
+};
 
-		if (err.message === 'User not found') {
-			statusCode = 404;
-			errorMessage = err.message;
-		}
+export const user_get_current_user = (
+	req: IAuthenticatedRequest,
+	res: Response,
+	next: NextFunction
+) => {
+	const user = req.user as IJwtPayload;
 
-		res.status(statusCode).json({
-			error: errorMessage,
+	getUserById(user.userId, res);
+};
+
+function getUserById(
+	userId: string | Schema.Types.ObjectId,
+	res: Response
+): void {
+	User.findById(userId)
+		.exec()
+		.then(result => {
+			if (!result) {
+				throw new Error('User not found');
+			}
+			res.status(200).json({
+				id: result._id,
+				login: result.login,
+			});
+		})
+		.catch(err => {
+			let statusCode = 500;
+			let errorMessage = 'Internal Server Error';
+
+			if (err.message === 'User not found') {
+				statusCode = 404;
+				errorMessage = err.message;
+			}
+
+			res.status(statusCode).json({
+				error: errorMessage,
+			});
 		});
-	});
 }

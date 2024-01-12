@@ -44,7 +44,11 @@ import IWordset from '../interfaces/IWordset.js';
  *             $ref: '#/components/schemas/Word'
  */
 const wordsetSchema = new mongoose.Schema<IWordset>({
-	userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
+	userId: {
+		type: mongoose.Schema.Types.ObjectId,
+		required: true,
+		ref: 'User',
+	},
 	wordsetName: { type: String, required: true },
 	languageFrom: { type: String, required: true },
 	languageTo: { type: String, required: true },

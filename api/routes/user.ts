@@ -191,3 +191,33 @@ router.delete('/:userId', checkAuth, UserController.user_delete_user);
  *               error: Internal Server Error during user retrieval
  */
 router.get('/:userId', checkAuth, UserController.user_get_user);
+
+/**
+ * @swagger
+ * /api/user:
+ *   get:
+ *     summary: Get current user
+ *     description: Retrieve current user details.
+ *     tags:
+ *       - Users
+ *     responses:
+ *       '200':
+ *         description: User found successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       '404':
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: User not found
+ *       '500':
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error during user retrieval
+ */
+router.get('/', checkAuth, UserController.user_get_current_user);

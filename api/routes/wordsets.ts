@@ -215,3 +215,84 @@ router.delete(
 	checkAuth,
 	WordsetController.wordsets_delete_wordset
 );
+
+/**
+ * @swagger
+ * /api/wordsets/{wordsetId}:
+ *   put:
+ *     summary: Update a wordset by ID
+ *     description: Endpoint to update a wordset by its ID.
+ *     tags:
+ *       - Wordsets
+ *     parameters:
+ *       - in: path
+ *         name: wordsetId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the wordset to update.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 format: uuid
+ *                 description: "User ID."
+ *               wordsetName:
+ *                 type: string
+ *                 description: The updated name of the wordset.
+ *               languageFrom:
+ *                 type: string
+ *                 description: The updated source language of the wordset.
+ *               languageTo:
+ *                 type: string
+ *                 description: The updated target language of the wordset.
+ *               words:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     nameFrom:
+ *                       type: string
+ *                       description: The updated name in the source language.
+ *                     nameTo:
+ *                       type: string
+ *                       description: The updated name in the target language.
+ *                 description: An array of updated words in the wordset.
+ *           example:
+ *             wordsetName: "Updated Wordset Name"
+ *             languageFrom: "English"
+ *             languageTo: "Spanish"
+ *             words:
+ *               - nameFrom: "Hello"
+ *                 nameTo: "Hola"
+ *               - nameFrom: "Goodbye"
+ *                 nameTo: "Adiós"
+ *     responses:
+ *       '200':
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Wordset updated"
+ *               request:
+ *                 type: "GET"
+ *                 url: "https://localhost/api/wordsets/{wordsetId}"
+ *       '404':
+ *         description: Not Found
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Wordset not found"
+ *       '500':
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Internal Server Error. Please try again later."
+ */
+router.put('/:wordsetId', checkAuth, WordsetController.wordsets_update_wordset);

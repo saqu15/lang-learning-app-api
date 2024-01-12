@@ -8,6 +8,10 @@ import IUser from '../interfaces/IUser.js';
  *     User:
  *       type: object
  *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           description: "User ID."
  *         login:
  *           type: string
  *           description: Login name of the user.
@@ -21,10 +25,6 @@ import IUser from '../interfaces/IUser.js';
  *           description: User's email address.
  *           example: john.doe@example.com
  *           format: email
- *       required:
- *         - login
- *         - password
- *         - email
  */
 const userSchema = new mongoose.Schema<IUser>({
 	login: { type: String, required: true },

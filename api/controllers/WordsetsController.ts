@@ -61,7 +61,7 @@ export const wordsets_create_wordset = (
 		languageFrom: req.body.languageFrom,
 		languageTo: req.body.languageTo,
 		words: req.body.words,
-		description: req.body?.description
+		description: req.body?.description,
 	});
 
 	wordset

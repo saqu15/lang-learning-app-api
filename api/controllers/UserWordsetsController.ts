@@ -50,25 +50,25 @@ export const user_wordsets_get_user_wordsets = (
 	const user = req.user as IJwtPayload;
 
 	UserWordset.find({ userId: user.userId })
-        .populate('wordsetId', '-__v')
+		.populate('wordsetId', '-__v')
 		.exec()
 		.then(result => {
 			console.log(result);
-			res.status(200).json({ 
-                wordset: result.map((userWordset) => {
-                    const wordset = userWordset.wordsetId as any;
-                    return {
-                        id: wordset._id,
-                        userId: wordset.userId,
+			res.status(200).json({
+				wordset: result.map(userWordset => {
+					const wordset = userWordset.wordsetId as any;
+					return {
+						id: wordset._id,
+						userId: wordset.userId,
 						ownerId: userWordset.userId,
-                        userName: wordset.userName,
-                        wordsetName: wordset.wordsetName,
-                        languageFrom: wordset.languageFrom,
-                        languageTo: wordset.languageTo,
-                        words: wordset.words
-                    }
-                }) 
-             });
+						userName: wordset.userName,
+						wordsetName: wordset.wordsetName,
+						languageFrom: wordset.languageFrom,
+						languageTo: wordset.languageTo,
+						words: wordset.words,
+					};
+				}),
+			});
 		})
 		.catch(err => {
 			console.log(err);
@@ -83,28 +83,32 @@ export const user_wordsets_delete_user_wordset = (
 	res: Response,
 	next: NextFunction
 ) => {
-	const user = (req.user as IJwtPayload);
-	if (user.userId !== req.query.userId as any) {
+	const user = req.user as IJwtPayload;
+	if (user.userId !== (req.query.userId as any)) {
 		res.status(401).json({ message: 'Unauthorized' });
 		return;
 	}
 
-	UserWordset.deleteOne({ wordsetId: req.query.userWordsetId, userId: user.userId}).exec()
-	.then(wordset => {
-		console.log(wordset);
-		res.status(200).json({
-			message: 'User wordset deleted',
-			request: {
-				type: 'POST',
-				url: process.env.APP_URL + '/user-wordsets',
-				body: {
-					userId: 'ID',
-					wordsetId: 'ID',
-				},
-			},
-		});
+	UserWordset.deleteOne({
+		wordsetId: req.query.userWordsetId,
+		userId: user.userId,
 	})
-	.catch(err => {
-		res.status(500).json({ error: err });
-	});
-}
+		.exec()
+		.then(wordset => {
+			console.log(wordset);
+			res.status(200).json({
+				message: 'User wordset deleted',
+				request: {
+					type: 'POST',
+					url: process.env.APP_URL + '/user-wordsets',
+					body: {
+						userId: 'ID',
+						wordsetId: 'ID',
+					},
+				},
+			});
+		})
+		.catch(err => {
+			res.status(500).json({ error: err });
+		});
+};

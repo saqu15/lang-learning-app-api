@@ -132,4 +132,8 @@ router.get(
  *       500:
  *         description: Internal server error. An error occurred while processing the request.
  */
-router.delete('/', checkAuth, UserWordsetsController.user_wordsets_delete_user_wordset);
+router.delete(
+	'/',
+	checkAuth,
+	UserWordsetsController.user_wordsets_delete_user_wordset
+);

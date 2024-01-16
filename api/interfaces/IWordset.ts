@@ -13,4 +13,6 @@ export default interface IWordset {
 	languageTo: string;
 	words: IWord[];
 	userName?: string;
+	ownerId?: mongoose.Schema.Types.ObjectId;
+	description?: string;
 }

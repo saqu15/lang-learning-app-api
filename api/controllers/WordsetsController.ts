@@ -30,6 +30,7 @@ export const wordsets_get_all = (
 						languageTo: wordset.languageTo,
 						wordsetName: wordset.wordsetName,
 						words: wordset.words,
+						description: wordset?.description,
 						request: {
 							type: 'GET',
 							url:
@@ -60,6 +61,7 @@ export const wordsets_create_wordset = (
 		languageFrom: req.body.languageFrom,
 		languageTo: req.body.languageTo,
 		words: req.body.words,
+		description: req.body?.description
 	});
 
 	wordset
@@ -72,6 +74,7 @@ export const wordsets_create_wordset = (
 					languageTo: wordset.languageTo,
 					words: wordset.words,
 					id: wordset._id,
+					description: wordset?.description,
 					request: {
 						type: 'GET',
 						url: process.env.APP_URL + '/wordsets/' + wordset._id,
@@ -110,6 +113,7 @@ export const wordsets_get_wordset = (
 					languageFrom: wordset.languageFrom,
 					languageTo: wordset.languageTo,
 					words: wordset.words,
+					description: wordset?.description,
 				},
 				request: {
 					type: 'GET',

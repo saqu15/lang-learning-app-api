@@ -42,6 +42,13 @@ import IWordset from '../interfaces/IWordset.js';
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/Word'
+ *         ownerId:
+ *           type: string
+ *           format: uuid
+ *           description: "Id of user added to wordset."
+ *         description:
+ *           type: string
+ *           description: "Description of wordset."
  */
 const wordsetSchema = new mongoose.Schema<IWordset>({
 	userId: {
@@ -58,6 +65,7 @@ const wordsetSchema = new mongoose.Schema<IWordset>({
 			nameTo: { type: String, required: true },
 		},
 	],
+	description: { type: String },
 });
 
 export const Wordset = mongoose.model<IWordset>('Wordset', wordsetSchema);

@@ -106,6 +106,7 @@ router.get('/', checkAuth, WordsetController.wordsets_get_all);
  *                     nameTo: "hola"
  *                   - nameFrom: "world"
  *                     nameTo: "mundo"
+ *                 description: "Wordset description"
  *                 _id: "5ff9b359c37f713e6c6a3e1a"
  *                 request:
  *                   type: "GET"

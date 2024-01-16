@@ -69,9 +69,67 @@ router.post(
  *       500:
  *         description: An error occurred while processing the request.
  */
-
 router.get(
 	'/',
 	checkAuth,
 	UserWordsetsController.user_wordsets_get_user_wordsets
 );
+
+/**
+ * @swagger
+ * /api/user-wordsets:
+ *   delete:
+ *     summary: Delete a user-associated wordset
+ *     description: Deletes a user-associated wordset for a specific user.
+ *     tags:
+ *       - User wordsets
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the user for whom the wordset is associated.
+ *       - in: query
+ *         name: userWordsetId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the user-associated wordset to delete.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User wordset deleted successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: A success message.
+ *                 request:
+ *                   type: object
+ *                   properties:
+ *                     type:
+ *                       type: string
+ *                       description: The HTTP request method (POST).
+ *                     url:
+ *                       type: string
+ *                       description: The URL to create a new user wordset.
+ *                     body:
+ *                       type: object
+ *                       properties:
+ *                         userId:
+ *                           type: string
+ *                           description: The ID of the user.
+ *                         wordsetId:
+ *                           type: string
+ *                           description: The ID of the deleted wordset.
+ *       401:
+ *         description: Unauthorized. The user does not have permission to delete this wordset.
+ *       500:
+ *         description: Internal server error. An error occurred while processing the request.
+ */
+router.delete('/', checkAuth, UserWordsetsController.user_wordsets_delete_user_wordset);

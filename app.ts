@@ -3,6 +3,7 @@ import { router as wordsRoute } from './api/routes/words.js';
 import { router as wordsetsRoute } from './api/routes/wordsets.js';
 import { router as userRoute } from './api/routes/user.js';
 import { router as userWordsetsRoute } from './api/routes/userWordsets.js';
+import { router as wordsetHistoryRoute } from './api/routes/wordsetHistory.js';
 import log from 'morgan';
 import mongoose from 'mongoose';
 import { ResponseError } from './api/utils/response-error.js';
@@ -47,6 +48,7 @@ app.use('/api/words', wordsRoute);
 app.use('/api/wordsets', wordsetsRoute);
 app.use('/api/user', userRoute);
 app.use('/api/user-wordsets', userWordsetsRoute);
+app.use('/api/wordset-history', wordsetHistoryRoute);
 
 app.use((req: Request, res: Response, next: any) => {
 	if (req.path.startsWith('/docs')) {

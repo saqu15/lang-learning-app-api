@@ -54,7 +54,6 @@ export const wordsets_create_wordset = (
 ) => {
 	const user = req.user as IJwtPayload;
 
-	console.log(user.userId);
 	const wordset = new Wordset<IWordset>({
 		userId: user.userId,
 		wordsetName: req.body.wordsetName,
@@ -187,8 +186,6 @@ export const wordsets_update_wordset = (
 			} as IWord;
 		}),
 	};
-
-	console.log(updatedWordset);
 
 	Wordset.updateOne({ _id: req.params.wordsetId }, { $set: updatedWordset })
 		.exec()

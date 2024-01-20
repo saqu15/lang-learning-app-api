@@ -53,7 +53,6 @@ export const user_wordsets_get_user_wordsets = (
 		.populate('wordsetId', '-__v')
 		.exec()
 		.then(result => {
-			console.log(result);
 			res.status(200).json({
 				wordset: result.map(userWordset => {
 					const wordset = userWordset.wordsetId as any;

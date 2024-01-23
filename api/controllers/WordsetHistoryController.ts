@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { IAuthenticatedRequest } from '../interfaces/IAuthenticatedRequest.js';
 import { WordsetHistory } from '../models/wordsetHistory.js';
 import IWordsetHistory from '../interfaces/IWordsetHistory.js';

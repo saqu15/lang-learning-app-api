@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { UserWordset } from '../models/userWordset.js';
 import IUserWordset from '../interfaces/IUserWordset.js';
 import { IAuthenticatedRequest } from '../interfaces/IAuthenticatedRequest.js';

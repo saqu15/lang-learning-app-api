@@ -1,9 +1,6 @@
-import mongoose from 'mongoose';
 import { IAuthenticatedRequest } from '../interfaces/IAuthenticatedRequest.js';
 import { IJwtPayload } from '../interfaces/IJwtPayload.js';
-import IUser from '../interfaces/IUser.js';
 import IWordset from '../interfaces/IWordset.js';
-import { Word } from '../models/word.js';
 import { Wordset } from '../models/wordset.js';
 import { Request, Response, NextFunction } from 'express';
 import IWord from '../interfaces/IWord.js';
@@ -140,25 +137,29 @@ export const wordsets_delete_wordset = (
 	res: Response,
 	next: NextFunction
 ) => {
-	if ((req.user as IJwtPayload).userId !== req.body.userId) {
-		res.status(401).json({ message: 'Unauthorized' });
-		return;
-	}
-
-	Wordset.deleteOne({ _id: req.params.wordsetId })
+	Wordset.findById(req.params.wordsetId)
 		.exec()
 		.then(wordset => {
-			res.status(200).json({
-				message: 'Wordset deleted',
-				request: {
-					type: 'POST',
-					url: process.env.APP_URL + '/wordsets',
-					body: {
-						wordId: 'ID',
-						elements: 'Number',
-					},
-				},
-			});
+			if ((req.user as IJwtPayload).userId.toString() !== wordset?.userId?.toString()) {
+				res.status(401).json({ message: 'Unauthorized' });
+				return;
+			} else {
+				Wordset.deleteOne({ _id: req.params.wordsetId })
+					.exec()
+					.then(wordset => {
+						res.status(200).json({
+							message: 'Wordset deleted',
+							request: {
+								type: 'POST',
+								url: process.env.APP_URL + '/wordsets',
+								body: {
+									wordId: 'ID',
+									elements: 'Number',
+								},
+							},
+						});
+					});
+			}
 		})
 		.catch(err => {
 			res.status(500).json({ error: err });
